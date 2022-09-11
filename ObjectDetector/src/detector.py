@@ -25,7 +25,7 @@ class detector():
     def get_camera_state(self, camera_id):
         print("Getting camera state for camera {}".format(camera_id))
 
-    def run(self):
+    def run(self, object_state):
         # Get list of images from working directory
         images = glob.glob(self.working_directory + '/*.jpg')
 
@@ -38,6 +38,10 @@ class detector():
             print("Loading camera {}".format(camera_id))
 
             # get camera state
+            if camera_id in object_state:
+                print("Camera state found")
+            else:
+                print("Camera state not found, assume 0")
 
             # run detector only if state is 0 - no object or 2 object detected and processed
 
@@ -55,8 +59,12 @@ class detector():
                 traceback.print_exc()
                 exit(1)
 
-        # run detector
 
+def fake_detector():
+    # Detector output
+    # 0 - No object
+    # 1 - Object found
+    return 1
 
 def publish_json_message_to_topic(ipc_client, topic, message):
     print("Creating json message")
