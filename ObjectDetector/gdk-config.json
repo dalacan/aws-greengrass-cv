@@ -1,0 +1,16 @@
+{
+  "component": {
+    "com.example.ObjectDetector": {
+      "author": "Derrick Choo",
+      "version": "NEXT_PATCH",
+      "build": {
+        "build_system": "zip"
+      },
+      "publish": {
+        "bucket": "<PLACEHOLDER_BUCKET>",
+        "region": "ap-southeast-2"
+      }
+    }
+  },
+  "gdk_version": "1.0.0"
+}
