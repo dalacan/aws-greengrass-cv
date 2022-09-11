@@ -1,0 +1,25 @@
+---
+RecipeFormatVersion: "2020-01-25"
+ComponentName: "{COMPONENT_NAME}"
+ComponentVersion: "{COMPONENT_VERSION}"
+ComponentDescription: "Video capture component."
+ComponentPublisher: "{COMPONENT_AUTHOR}"
+ComponentConfiguration:
+  DefaultConfiguration:
+    CameraIDs: "0,1,2"
+    Interval: 15
+    WorkingDirectory: /tmp/camera
+Manifests:
+  - Platform:
+      os: all
+    Artifacts:
+      - URI: "s3://BUCKET_NAME/COMPONENT_NAME/COMPONENT_VERSION/VideoCapture.zip"
+        Unarchive: ZIP
+    Lifecycle:
+      Install:
+        RequiresPrivilege: true
+        Script: "pip3 install -r {artifacts:decompressedPath}/VideoCapture/requirements.txt"
+        Timeout: 600
+      Run: 
+        RequiresPrivilege: true
+        Script: "python3 -u {artifacts:decompressedPath}/VideoCapture/main.py -d {configuration:/WorkingDirectory} -i {configuration:/Interval}"
