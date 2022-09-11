@@ -4,9 +4,19 @@ ComponentName: "{COMPONENT_NAME}"
 ComponentVersion: "{COMPONENT_VERSION}"
 ComponentDescription: "This component will process an image by reading the barcode, resize and save."
 ComponentPublisher: "{COMPONENT_AUTHOR}"
+ComponentDependencies:
+  aws.greengrass.TokenExchangeService:
+    VersionRequirement: '^2.0.0'
+    DependencyType: HARD
 ComponentConfiguration:
   DefaultConfiguration:
+    WindowsFileShareSecretKey: windows/fileshare
+    WindowsFileShareIP: 192.168.50.11
+    WindowsShareDirectory: camera
+    WindowsMount: /mnt/win_share
     WorkingDirectory: /tmp/camera
+    DestBucket: BUCKET_NAME
+    DestBucketFolder: camera
     accessControl:
       aws.greengrass.ipc.pubsub:
         com.example.ProcessObject:pubsub:1:
@@ -23,5 +33,9 @@ Manifests:
       - URI: "s3://BUCKET_NAME/COMPONENT_NAME/COMPONENT_VERSION/ProcessObject.zip"
         Unarchive: ZIP
     Lifecycle:
-      Install: python3 -m pip install --user awsiotsdk pyzbar
-      Run: "python3 -u {artifacts:decompressedPath}/ProcessObject/main.py -d {configuration:/WorkingDirectory}"
+      # Install: python3 -m pip install --user awsiotsdk pyzbar boto3
+      Install:
+        RequiresPrivilege: true
+        Script: "bash {artifacts:decompressedPath}/ProcessObject/install.sh {artifacts:decompressedPath}/ProcessObject {configuration:/WindowsFileShareSecretKey} {configuration:/WindowsFileShareIP} {configuration:/WindowsShareDirectory} {configuration:/WindowsMount}"
+        Timeout: 600
+      Run: "python3 -u {artifacts:decompressedPath}/ProcessObject/main.py -d {configuration:/WorkingDirectory} -b {configuration:/DestBucket} -f {configuration:/DestBucketFolder} -m {configuration:/WindowsMount}"

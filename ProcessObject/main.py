@@ -15,6 +15,9 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--working_directory", type=str, default="/tmp/video_tmp", help="Local directory for storing images.")
     parser.add_argument("-t", "--topic", type=str, default="devices/ObjectState", help="Object state topic.")
+    parser.add_argument("-b", "--dest_bucket", type=str, help="Bucket to save processed images")
+    parser.add_argument("-f", "--dest_folder", type=str, default="camera", help="Folder to save processed images.")
+    parser.add_argument("-m", "--windows_mount", type=str, help="Windows mount to save images.")
     return parser.parse_known_args()
 
 def main():
@@ -23,7 +26,7 @@ def main():
 
     try:
         ipc_client = GreengrassCoreIPCClientV2()
-        handler = process.Process(args.working_directory)
+        handler = process.Process(args.working_directory, args.dest_bucket, args.dest_folder, args.windows_mount)
         _, operation = ipc_client.subscribe_to_topic(topic=args.topic, on_stream_event=handler.on_stream_event,
                                                      on_stream_error=handler.on_stream_error, on_stream_closed=handler.on_stream_closed)
         print('Successfully subscribed to topic: ' + args.topic)
