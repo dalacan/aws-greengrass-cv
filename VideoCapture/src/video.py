@@ -17,6 +17,12 @@ class video(threading.Thread):
 
 def videoToFrame(camera_id, working_directory):
     cam = cv2.VideoCapture(camera_id)
+
+    width = 1920
+    height =1080
+    cam.set(3, width)
+    cam.set(4, height)
+
     print("Reading camera stream: ", camera_id)
     ret, image = cam.read()
     image_name = str(camera_id) + '.jpg'
