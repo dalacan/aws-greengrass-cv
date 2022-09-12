@@ -9,7 +9,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--interval", type=int, default=30, help="Camera capture intervals")
     parser.add_argument("-d", "--working_directory", type=str, default="/tmp/video_tmp", help="Local directory for storing images.")
-
+    parser.add_argument("-c", "--max_cameras", type=int, default=10, help="Maximum number of cameras.")
     return parser.parse_known_args()
 
 def main():
@@ -24,7 +24,7 @@ def main():
     # Get a list of cameras
     print("Scanning for cameras")
     connected_cam = []
-    for port in range(0, 10):
+    for port in range(0, args.max_cameras):
         print("Attempting to open camera on port {}".format(port))
         try:
             cam = cv2.VideoCapture(port)

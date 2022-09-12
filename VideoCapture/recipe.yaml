@@ -6,7 +6,7 @@ ComponentDescription: "Video capture component."
 ComponentPublisher: "{COMPONENT_AUTHOR}"
 ComponentConfiguration:
   DefaultConfiguration:
-    CameraIDs: "0,1,2"
+    MaxCameras: 10
     Interval: 15
     WorkingDirectory: /tmp/camera
 Manifests:
@@ -27,4 +27,4 @@ Manifests:
         Timeout: 600
       Run: 
         RequiresPrivilege: true
-        Script: "python3 -u {artifacts:decompressedPath}/VideoCapture/main.py -d {configuration:/WorkingDirectory} -i {configuration:/Interval}"
+        Script: "python3 -u {artifacts:decompressedPath}/VideoCapture/main.py -d {configuration:/WorkingDirectory} -i {configuration:/Interval} -c {configuration:/MaxCameras}"
