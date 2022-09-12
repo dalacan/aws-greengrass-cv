@@ -1,7 +1,7 @@
 #!/bin/bash
 sudo apt-get install cifs-utils
 
-python3 $1/install.py $2
+python3 $1/install.py -s $2
 sudo mv /tmp/win-credentials /etc/win-credentials
 sudo chown root: /etc/win-credentials
 sudo chmod 600 /etc/win-credentials
