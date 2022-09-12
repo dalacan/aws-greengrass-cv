@@ -45,7 +45,7 @@ def main():
 
     except UnauthorizedError:
         print('Unauthorized error while subscribing to topic: ' +
-              topic, file=sys.stderr)
+              args.topic, file=sys.stderr)
         traceback.print_exc()
         exit(1)
     except Exception:

@@ -3,6 +3,7 @@ import os
 import sys
 import traceback
 import json
+import cv2
 
 
 from awsiot.greengrasscoreipc.clientv2 import GreengrassCoreIPCClientV2
@@ -24,6 +25,33 @@ class detector():
     
     def get_camera_state(self, camera_id):
         print("Getting camera state for camera {}".format(camera_id))
+
+    def compare_image(self, comparison_image):
+        base_image = '/tmp/base_image.jpg'
+        base_image = cv2.imread(base_image)
+        base_image = cv2.cvtColor(base_image, cv2.COLOR_BGR2RGB)
+        base_image_hist = cv2.calcHist([base_image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+        base_image_hist = cv2.normalize(hist, hist).flatten()
+
+        comparison_image = cv2.cvtColor(comparison_image, cv2.COLOR_BGR2RGB)
+
+        hist = cv2.calcHist([comparison_image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256])
+        hist = cv2.normalize(hist, hist).flatten()
+
+        OPENCV_METHODS = (
+            ("Correlation", cv2.HISTCMP_CORREL),
+            ("Chi-Squared", cv2.HISTCMP_CHISQR),
+            ("Intersection", cv2.HISTCMP_INTERSECT),
+            ("Hellinger", cv2.HISTCMP_BHATTACHARYYA))
+
+        # loop over the comparison methods
+        for (methodName, method) in OPENCV_METHODS:
+            # compute the distance between the two histograms
+            # using the method and update the results dictionary
+            base_image_distance = cv2.compareHist(base_image_hist, base_image_hist, method)
+            distance = cv2.compareHist(base_image_hist, hist, method)
+
+            print("Method Name: {} base_image_distance: {}, comparison distance: {}".format(methodName, base_image_distance, distance))
 
     def run(self, object_state):
         # Get list of images from working directory
