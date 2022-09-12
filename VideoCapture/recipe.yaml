@@ -18,7 +18,12 @@ Manifests:
     Lifecycle:
       Install:
         RequiresPrivilege: true
-        Script: "pip3 install -r {artifacts:decompressedPath}/VideoCapture/requirements.txt"
+        Script: |
+          apt-get update
+          apt-get install libhdf5-dev libhdf5-serial-dev libhdf5-103
+          apt-get install libqt5gui5 libqt5webkit5 libqt5test5 python3-pyqt5
+          apt-get install python3-dev
+          pip3 install -r {artifacts:decompressedPath}/VideoCapture/requirements.txt
         Timeout: 600
       Run: 
         RequiresPrivilege: true
