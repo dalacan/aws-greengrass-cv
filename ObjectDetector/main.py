@@ -24,12 +24,10 @@ def main():
     print("Arguments", args)
 
     test_detector = detector.detector(args.working_directory)
-
-    object_state = {}
-
+    
     try:
         ipc_client = GreengrassCoreIPCClientV2()
-        handler = streamhandler.StreamHandler(object_state)
+        handler = streamhandler.StreamHandler()
         _, operation = ipc_client.subscribe_to_topic(topic=args.topic, on_stream_event=handler.on_stream_event,
                                                      on_stream_error=handler.on_stream_error, on_stream_closed=handler.on_stream_closed)
         print('Successfully subscribed to topic: ' + args.topic)
@@ -37,7 +35,7 @@ def main():
         while True:
             print("Running detector")
             print("object_state")
-            print(object_state)
+            print(handler.object_state)
             test_detector.run(handler.object_state)
             time.sleep(15)
         

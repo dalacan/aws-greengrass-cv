@@ -12,9 +12,9 @@ from awsiot.greengrasscoreipc.model import (
 topic = 'devices/ObjectState'
 
 class StreamHandler(client.SubscribeToTopicStreamHandler):
-    def __init__(self, object_state):
+    def __init__(self):
         super().__init__()
-        self.object_state = object_state
+        self.object_state = {}
 
     def on_stream_event(self, event: SubscriptionResponseMessage) -> None:
         try:
